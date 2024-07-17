@@ -6,6 +6,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
+const basketRoutes = require("./routes/basketRoutes");
 const DATABASE_URL = process.env.DATABASE_URL;
 
 const app = express();
@@ -22,7 +23,7 @@ app.use("/order", orderRoutes);
 app.use("/auth", authRoutes);
 app.use("/product", productRoutes);
 app.use("/user", userRoutes);
-
+app.use("/basket", basketRoutes);
 
 
 port = 3000;

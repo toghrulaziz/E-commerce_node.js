@@ -4,7 +4,7 @@ const User = require("../models/user");
 const { authenticateAccessToken } = require("../middlewares/authenticateAccessToken");
 const { isAdmin } = require("../middlewares/isAdmin");
 
-// getall
+// get all users for admin
 router.get("/", authenticateAccessToken, isAdmin ,async (req, res) => {
     try{
         const users = await User.find();
@@ -14,7 +14,7 @@ router.get("/", authenticateAccessToken, isAdmin ,async (req, res) => {
     }
 });
 
-// get :id
+// get user by id for admin
 router.get("/:id", authenticateAccessToken, isAdmin, async (req, res) => {
     try{
         const user = await User.findById(req.body.id);
@@ -29,7 +29,7 @@ router.get("/:id", authenticateAccessToken, isAdmin, async (req, res) => {
 })
 
 
-// delete
+// delete user for admin
 router.delete("/delete/:id", authenticateAccessToken, isAdmin, async (req, res) => {
     try{
         const status = await User.findByIdAndDelete(req.params.id);
@@ -40,11 +40,12 @@ router.delete("/delete/:id", authenticateAccessToken, isAdmin, async (req, res) 
 });
 
 
-// edit
+// edit user 
 router.put("/edit/:id", authenticateAccessToken, async (req, res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, {
-            name: req.body.name,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
             email: req.body.email,
         });
 

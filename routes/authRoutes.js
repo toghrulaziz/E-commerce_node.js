@@ -5,14 +5,14 @@ const User = require("../models/user");
 const generateAccessToken = require("../utils/generateAccessToken");
 const generateRefreshToken = require("../utils/generateRefreshToken");
 const jwt = require("jsonwebtoken");
-
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 // register 
 router.post("/register", async (req, res) => {
     try{
-        const { username, email, password, isAdmin } = req.body;
+        const { firstname, lastname, email, password, isAdmin } = req.body;
         const passwordHash = await bcrypt.hash(password, 10);
-        const user = new User({ username, email, passwordHash, isAdmin });
+        const user = new User({ firstname, lastname, email, passwordHash, isAdmin });
         await user.save();
         res.status(201).send({ message : "User registered successfully"});
     } catch (error){

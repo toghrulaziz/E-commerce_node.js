@@ -5,7 +5,7 @@ const { authenticateAccessToken } = require("../middlewares/authenticateAccessTo
 const { isAdmin } = require("../middlewares/isAdmin");
 
 
-// get "/"
+// get all products
 router.get("/", async (req, res) => {
     try{
         const products = await Product.find();
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// get "/:id"
+// get product by id
 router.get("/:id", async (req, res) => {
     try{
         const product = await Product.findById(req.params.id);
@@ -30,16 +30,17 @@ router.get("/:id", async (req, res) => {
 });
 
 
-// put /edit/:id
+// edit product
 router.put("/edit/:id", authenticateAccessToken, isAdmin, async (req, res) => {
     try {
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
-            name: req.body.name,
+            title: req.body.title,
             description: req.body.description,
             price: req.body.price,
             category: req.body.category,
             stock: req.body.stock,
-            imageUrl: req.body.imageUrl
+            images: req.body.images,
+            currency: req.body.currency,
         });
 
         if(updatedProduct){
@@ -66,14 +67,15 @@ router.delete("/delete/:id", authenticateAccessToken, isAdmin, async (req, res) 
 // create 
 router.post("/create", authenticateAccessToken, isAdmin, async (req, res) => {
     try {
-        const { name, description, price, category, stock, imageUrl } = req.body;
+        const { title, description, price, category, stock, images, currency } = req.body;
         const newProduct = new Product({
-            name,
+            title,
             description,
             price,
             category,
             stock,
-            imageUrl
+            images,
+            currency,
         });
 
         await newProduct.save();

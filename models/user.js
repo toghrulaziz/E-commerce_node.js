@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    username: { type: String, required: true },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
-    orders: [{ type: Schema.Types.ObjectId, ref: 'OrderItem' }]
+    orders: [{ type: Schema.Types.ObjectId, ref: 'OrderItem', default: [] }],
+    basket: [{ type: mongoose.Schema.ObjectId, ref: 'Product', default: [] }],
 }, {
     timestamps: true
 });
