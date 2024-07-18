@@ -6,6 +6,7 @@ const orderSchema = new Schema({
         { type: mongoose.Schema.ObjectId, ref: "Product", required: true},
     ],
     owner: { type: mongoose.Schema.ObjectId, ref: "User", required: true},
+    status: { type: String, enum: ["pending", "cancelled", "confirmed"], default: "pending"},
 });
 
 const Order = mongoose.model('Order', orderSchema);

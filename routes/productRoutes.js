@@ -8,12 +8,20 @@ const { isAdmin } = require("../middlewares/isAdmin");
 // get all products
 router.get("/", async (req, res) => {
     try{
-        const products = await Product.find();
-        res.json(products); 
+        const page = parseInt(req.query.page) || 1;
+        const item_count = parseInt(req.query.item_count) || 10;
+
+        const skip = (page - 1) * item_count;
+        const totalItems = await Product.countDocuments();
+        const totalPages = Math.ceil(totalItems / item_count);
+
+        const items = await Product.find().skip(skip).limit(item_count);
+        res.json(items, page, totalPages);
     } catch (err){
         res.status(500).json({ message: err.message });
     }
 });
+
 
 // get product by id
 router.get("/:id", async (req, res) => {
@@ -53,7 +61,8 @@ router.put("/edit/:id", authenticateAccessToken, isAdmin, async (req, res) => {
     }
 })
 
-// delete /delete/:id
+
+// delete product
 router.delete("/delete/:id", authenticateAccessToken, isAdmin, async (req, res) => {
     try{
         const status = await Product.findByIdAndDelete(req.params.id);
@@ -81,6 +90,24 @@ router.post("/create", authenticateAccessToken, isAdmin, async (req, res) => {
         await newProduct.save();
         res.status(201).json(newProduct);
     } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+// search for product
+router.get("/search/:searchTerm", authenticateAccessToken, async (req, res) => {
+    try{
+        const searchTerm = req.params.searchTerm;
+        const results = await Product.find({
+            $or: [
+                { title: { $regex: searchTerm, $options: "i" }},
+                { description: { $regex: searchTerm, $options: "i"}},
+            ],
+        });
+
+        res.json(results);
+    } catch(err){
         res.status(500).json({ message: err.message });
     }
 });
