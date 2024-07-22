@@ -59,4 +59,23 @@ router.put("/edit/:id", authenticateAccessToken, async (req, res) => {
     }
 })
 
+
+// search user
+router.get("/search/:searchTerm", authenticateAccessToken, isAdmin, async (req, res) => {
+    try{
+        const searchTerm = req.params.searchTerm;
+        const results = await User.find({
+            $or: [
+                { firstname: { $regex: searchTerm, $options: "i" }},
+                { lastname: { $regex: searchTerm, $options: "i"}},
+                { email: { $regex: searchTerm, $options: "i"}},
+            ],
+        });
+
+        res.json(results);
+    } catch(err){
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;

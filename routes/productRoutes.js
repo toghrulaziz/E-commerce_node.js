@@ -103,6 +103,7 @@ router.get("/search/:searchTerm", authenticateAccessToken, async (req, res) => {
             $or: [
                 { title: { $regex: searchTerm, $options: "i" }},
                 { description: { $regex: searchTerm, $options: "i"}},
+                { category: { $regex: searchTerm, $options: "i"}},
             ],
         });
 
