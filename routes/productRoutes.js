@@ -96,7 +96,7 @@ router.post("/create", authenticateAccessToken, isAdmin, async (req, res) => {
 
 
 // search for product
-router.get("/search/:searchTerm", authenticateAccessToken, async (req, res) => {
+router.get("/search/:searchTerm", async (req, res) => {
     try{
         const searchTerm = req.params.searchTerm;
         const results = await Product.find({

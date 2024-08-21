@@ -10,11 +10,19 @@ const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 // register 
 router.post("/register", async (req, res) => {
     try{
-        const { firstname, lastname, email, password, isAdmin } = req.body;
+        const { email, password, firstname, lastname, isAdmin } = req.body;
         const passwordHash = await bcrypt.hash(password, 10);
         const user = new User({ firstname, lastname, email, passwordHash, isAdmin });
         await user.save();
-        res.status(201).send({ message : "User registered successfully"});
+
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        res.status(201).send({ 
+            message: "User registered successfully",
+            accessToken,
+            refreshToken
+        });
     } catch (error){
         res.status(500).send("Error");
     }
@@ -49,7 +57,7 @@ router.post("/refresh", (req, res) => {
 
     jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
         if(err) {
-            return res.sendStatus(403);
+            return res.sendStatus(401);
         }
         const accessToken = generateAccessToken(user);
         res.json({ accessToken: accessToken});
